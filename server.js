@@ -70,6 +70,8 @@ function checkWinner(board) {
   return null; // Если победителя нет
 }
 
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
+// Используем динамический порт для Heroku
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
