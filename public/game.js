@@ -1,6 +1,7 @@
 const socket = io();
 let currentPlayer = '';
 let roomCode = '';
+let isMyTurn = false;
 
 document.getElementById('joinGame').addEventListener('click', () => {
   roomCode = document.getElementById('roomCode').value;
@@ -10,7 +11,13 @@ document.getElementById('joinGame').addEventListener('click', () => {
 socket.on('roomJoined', (player) => {
   currentPlayer = player;
   document.getElementById('lobby').style.display = 'none';
+  document.getElementById('waitingMessage').style.display = 'block'; // Показываем статус ожидания
+});
+
+socket.on('secondPlayerJoined', () => {
+  document.getElementById('waitingMessage').style.display = 'none';
   document.getElementById('game').style.display = 'block';
+  isMyTurn = currentPlayer === 'X'; // Ходить начинает игрок 'X'
 });
 
 socket.on('roomFull', () => {
@@ -20,14 +27,16 @@ socket.on('roomFull', () => {
 let gameBoard = document.getElementById('gameBoard');
 
 gameBoard.addEventListener('click', function (event) {
-  if (event.target.tagName === 'TD' && event.target.textContent === '') {
+  if (event.target.tagName === 'TD' && event.target.textContent === '' && isMyTurn) {
     let id = event.target.id;
     socket.emit('makeMove', { roomCode, id, player: currentPlayer });
+    isMyTurn = false; // После хода блокируем до следующего хода
   }
 });
 
 socket.on('moveMade', (data) => {
   document.getElementById(data.id).textContent = data.player;
+  isMyTurn = data.player !== currentPlayer; // Ход следующего игрока
 });
 
 socket.on('gameOver', (data) => {

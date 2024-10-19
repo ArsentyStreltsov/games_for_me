@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Верю-Не Верю Lobby</title>
+  <style>
+    #lobby {
+      text-align: center;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lobby">
+    <h1>Enter Lobby Code for Верю-Не Верю</h1>
+    <input type="text" id="roomCode" placeholder="Enter room code">
+    <button id="joinGame">Join Game</button>
+    <button onclick="window.location.href='index.html'">Back to Main Menu</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let joinButton = document.getElementById('joinGame');
+      joinButton.addEventListener('click', () => {
+        let roomCode = document.getElementById('roomCode').value;
+        // Логика для подключения к комнате через WebSockets
+      });
+    });
+  </script>
+</body>
+</html>

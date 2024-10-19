@@ -17,12 +17,16 @@ io.on('connection', (socket) => {
     if (!rooms[roomCode]) {
       rooms[roomCode] = { players: [], board: Array(9).fill('') };
     }
-
+  
     if (rooms[roomCode].players.length < 2) {
       rooms[roomCode].players.push(socket.id);
       socket.join(roomCode);
-      console.log(`User joined room ${roomCode}`);
+  
       io.to(socket.id).emit('roomJoined', rooms[roomCode].players.length === 1 ? 'X' : 'O');
+  
+      if (rooms[roomCode].players.length === 2) {
+        io.to(roomCode).emit('secondPlayerJoined');
+      }
     } else {
       socket.emit('roomFull');
     }
