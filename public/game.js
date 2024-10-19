@@ -2,6 +2,7 @@ const socket = io();
 let currentPlayer = '';
 let roomCode = '';
 let isMyTurn = false;
+let currentTurnPlayer = ''; // Следит за тем, чей сейчас ход
 
 document.getElementById('joinGame').addEventListener('click', () => {
   roomCode = document.getElementById('roomCode').value;
@@ -12,12 +13,36 @@ socket.on('roomJoined', (player) => {
   currentPlayer = player;
   document.getElementById('lobby').style.display = 'none';
   document.getElementById('waitingMessage').style.display = 'block'; // Показываем статус ожидания
+  document.getElementById('currentPlayer').textContent = `Вы играете за: ${player}`;
 });
 
-socket.on('secondPlayerJoined', () => {
+function updateTurnIndicator() {
+  const turnIndicator = document.getElementById('turnIndicator');
+  turnIndicator.textContent = currentTurnPlayer === currentPlayer ? 'Ваш ход' : 'Ход оппонента';
+  turnIndicator.className = currentTurnPlayer === currentPlayer ? 'your-turn' : 'opponent-turn';
+}
+
+// Показываем анимацию выбора первого игрока
+function showFirstPlayerAnimation(firstPlayer) {
+  currentTurnPlayer = firstPlayer; // Сохраняем, кто будет ходить первым
+  const animationDiv = document.getElementById('animation');
+  animationDiv.textContent = "Определяем, кто будет ходить первым...";
+  animationDiv.style.display = 'block';
+  
+  setTimeout(() => {
+    animationDiv.textContent = `Первый ход у: ${firstPlayer}`;
+    setTimeout(() => {
+      animationDiv.style.display = 'none';
+      document.getElementById('game').style.display = 'block';
+      isMyTurn = currentPlayer === firstPlayer; // Если первый ход у текущего игрока
+      updateTurnIndicator(); // Обновляем индикатор хода
+    }, 2000); // Скрываем анимацию через 2 секунды
+  }, 2000); // Имитируем задержку перед показом первого игрока
+}
+
+socket.on('secondPlayerJoined', (firstPlayer) => {
   document.getElementById('waitingMessage').style.display = 'none';
-  document.getElementById('game').style.display = 'block';
-  isMyTurn = currentPlayer === 'X'; // Ходить начинает игрок 'X'
+  showFirstPlayerAnimation(firstPlayer);
 });
 
 socket.on('roomFull', () => {
@@ -30,13 +55,15 @@ gameBoard.addEventListener('click', function (event) {
   if (event.target.tagName === 'TD' && event.target.textContent === '' && isMyTurn) {
     let id = event.target.id;
     socket.emit('makeMove', { roomCode, id, player: currentPlayer });
-    isMyTurn = false; // После хода блокируем до следующего хода
+    isMyTurn = false; // Блокируем ход игрока после того, как он сделал ход
   }
 });
 
 socket.on('moveMade', (data) => {
   document.getElementById(data.id).textContent = data.player;
-  isMyTurn = data.player !== currentPlayer; // Ход следующего игрока
+  currentTurnPlayer = data.player === 'X' ? 'O' : 'X'; // Меняем ход на следующего игрока
+  isMyTurn = currentTurnPlayer === currentPlayer; // Проверяем, теперь ли ходит текущий игрок
+  updateTurnIndicator(); // Обновляем индикатор хода
 });
 
 socket.on('gameOver', (data) => {

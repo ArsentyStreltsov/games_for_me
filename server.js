@@ -25,7 +25,8 @@ io.on('connection', (socket) => {
       io.to(socket.id).emit('roomJoined', rooms[roomCode].players.length === 1 ? 'X' : 'O');
   
       if (rooms[roomCode].players.length === 2) {
-        io.to(roomCode).emit('secondPlayerJoined');
+        const firstPlayer = Math.random() < 0.5 ? 'X' : 'O'; // Рандомно выбираем первого игрока
+        io.to(roomCode).emit('secondPlayerJoined', firstPlayer);
       }
     } else {
       socket.emit('roomFull');

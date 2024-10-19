@@ -4,40 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tic-Tac-Toe Lobby</title>
-  <style>
-    table {
-      border-collapse: collapse;
-      margin: 50px auto;
-    }
-    td {
-      width: 100px;
-      height: 100px;
-      border: 1px solid #000;
-      text-align: center;
-      font-size: 36px;
-    }
-    #lobby {
-      text-align: center;
-      margin-top: 20px;
-    }
-    #game, #gameControls {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-    }
-    button {
-      padding: 10px;
-      margin-top: 20px;
-    }
-    #waitingMessage {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="lobby">
+  <div id="lobby"> 
     <h1>Enter Lobby Code for Tic-Tac-Toe</h1>
     <input type="text" id="roomCode" placeholder="Enter room code">
     <button id="joinGame">Join Game</button>
@@ -48,8 +18,14 @@
     <h2>Waiting for the second player...</h2>
   </div>
 
+  <div id="animation">
+    <h2>Determining who goes first...</h2>
+  </div>
+
   <div id="game">
     <h1>Tic-Tac-Toe</h1>
+    <div id="currentPlayer"></div>
+    <div id="turnIndicator"></div>
     <table id="gameBoard">
       <tr>
         <td id="0"></td>
