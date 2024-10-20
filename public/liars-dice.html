@@ -4,34 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Верю-Не Верю Lobby</title>
-  <style>
-    #lobby {
-      text-align: center;
-      margin-top: 20px;
-    }
-    button {
-      padding: 10px;
-      margin-top: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="lobby">
+  <!-- Лобби для входа в комнату -->
+  <div id="lobby"> 
     <h1>Enter Lobby Code for Верю-Не Верю</h1>
     <input type="text" id="roomCode" placeholder="Enter room code">
     <button id="joinGame">Join Game</button>
     <button onclick="window.location.href='index.html'">Back to Main Menu</button>
   </div>
 
+  <!-- Ожидание игроков -->
+  <div id="waitingForPlayers" style="display: none;">
+    <h2>Waiting for other players...</h2>
+    <p id="playerCount">Players in room: 0</p>
+    <button id="readyButton" style="display: none;">Ready</button>
+  </div>
+
+  <!-- Игровой процесс -->
+  <div id="game" style="display: none;">
+    <h1>Верю-Не Верю</h1>
+    <div id="currentPlayerStatus"></div>
+    <div id="playerCards">
+      <h2>Your Cards:</h2>
+      <div id="cards" class="card-container"></div>
+    </div>
+    <div id="tableCards">
+      <h2>Cards on the Table:</h2>
+      <div id="table" class="card-container"></div>
+    </div>
+    <button id="playTurn" disabled>Play Turn</button>
+    <button id="challenge" disabled>Challenge</button>
+  </div>
+
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      let joinButton = document.getElementById('joinGame');
-      joinButton.addEventListener('click', () => {
-        let roomCode = document.getElementById('roomCode').value;
-        // Логика для подключения к комнате через WebSockets
-      });
-    });
-  </script>
+  <script src="liars-dice.js"></script>
 </body>
 </html>
